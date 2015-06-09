@@ -17,6 +17,9 @@ OFFSETS = {UP: (1, 0),
            LEFT: (0, 1),
            RIGHT: (0, -1)}
 
+#Boolean to check if any tile has moved
+changed = False
+
 def merge(line):
     """
     Helper function that merges a single row or column in 2048
@@ -107,6 +110,8 @@ class TwentyFortyEight:
         Move all tiles in the given direction and add
         a new tile if any tiles moved.
         """   
+        global changed
+        
         if direction == UP or DOWN:
             num_steps = self.grid_height
         else:
@@ -145,10 +150,16 @@ class TwentyFortyEight:
                 set_row = pos_list[index][0]
                 set_col = pos_list[index][1]
                 set_value = merged_list[index]
+                ori_value = temp_list[index]
                 self.set_tile(set_row, set_col, set_value)
                 print "set value", set_value, "to row", set_row, "and col", set_col
-            print "============="               
-        
+                if set_value == ori_value:
+                    changed = True
+            print "============="   
+            #if any tile has moved, add a new tile to the grid
+            if changed == True:
+                self.new_tile()
+                
     def new_tile(self):
         """
         Create a new tile in a randomly selected empty
