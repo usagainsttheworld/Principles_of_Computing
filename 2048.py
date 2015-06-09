@@ -106,18 +106,50 @@ class TwentyFortyEight:
         """
         Move all tiles in the given direction and add
         a new tile if any tiles moved.
-        """
+        """   
+        if direction == UP or DOWN:
+            num_steps = self.grid_height
+        else:
+            num_steps = self.grid_width
         
-
+        temp_list=[]
+        print "initial tiles are", self.move_dict[direction]
+        for entry in self.move_dict[direction]:
+        #use the direction in the provided OFFSETS dictionary to iterate over 
+        #the entries of the associated row or column starting at the specified 
+        #initial tile. Retrieve the tile values from those entries, and store 
+        #them in a temporary list.   
+            for eachstep in range(num_steps):      
+                row = entry[0] + eachstep*(OFFSETS[direction])[0]
+                col = entry[1] + eachstep*(OFFSETS[direction])[1]
+                #function that iterates through the cells in a grid
+                #in a linear direction;
+                #entry is a tuple[row,col] denoting the starting cell;
+                #Offsets[direction] is a tuple that contains diference btw
+                #consecutive cells in the traversal;
+                current_pos=[row, col]
+                print "current pos is", current_pos
+                current_tile=self.get_tile(row, col)
+                print "current tile is", current_tile
+                temp_list.append(current_tile)       
+            print "temp_list is", temp_list
+            merged_list = merge(temp_list)
+            #Use your merge function to merge the tile values in this temporary list
+            print "merged_list is", merged_list
+            
+                
+        
     def new_tile(self):
         """
         Create a new tile in a randomly selected empty
         square.  The tile should be 2 90% of the time and
         4 10% of the time.
         """
+ 
         new_row = random.randrange(self.grid_height)
         new_col = random.randrange(self.grid_width)
         new_tile = random.choice([2]*90+[4]*10)
+     
         
     def set_tile(self, row, col, value):
         """
@@ -133,9 +165,13 @@ class TwentyFortyEight:
 
 #Test
 game=TwentyFortyEight(4,5)
-game.set_tile(0,3,2)
 print game
-print game.move_dict
+game.set_tile(0,0,2)
+game.set_tile(1,0,0)
+game.set_tile(2,0,2)
+game.set_tile(3,0,4)
+print game
+game.move(UP)
 
 
 #poc_2048_gui.run_gui(TwentyFortyEight(4, 4))
