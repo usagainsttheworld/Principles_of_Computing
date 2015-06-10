@@ -2,8 +2,9 @@
 Clone of 2048 game.
 """
 
-#import poc_2048_gui
+import poc_2048_gui
 import random
+
 # Directions, DO NOT MODIFY
 UP = 1
 DOWN = 2
@@ -16,9 +17,6 @@ OFFSETS = {UP: (1, 0),
            DOWN: (-1, 0),
            LEFT: (0, 1),
            RIGHT: (0, -1)}
-
-#Boolean to check if any tile has moved
-changed = False
 
 def merge(line):
     """
@@ -64,11 +62,13 @@ class TwentyFortyEight:
     """
     Class to run the game logic.
     """
+    #Boolean to check if any tile has moved
+    changed = False
+    
     def __init__(self, grid_height, grid_width):
         self.grid_height = grid_height
         self.grid_width = grid_width
         self.grid=[]
-        self.reset()
         #list of indices for the initial tiles in the direction.
         #Initial tiles are those whose values appear first in the list 
         #passed to the merge function.
@@ -85,6 +85,9 @@ class TwentyFortyEight:
         """
         self.cell = [[0 for dummy_col in range(self.grid_width)]
                        for dummy_row in range(self.grid_height)]
+        print "creat 1st tile"
+        self.new_tile()
+        print "creat 2nd tile"
         self.new_tile()
 
     def __str__(self):
@@ -109,9 +112,7 @@ class TwentyFortyEight:
         """
         Move all tiles in the given direction and add
         a new tile if any tiles moved.
-        """   
-        global changed
-        
+        """         
         if direction == UP or DOWN:
             num_steps = self.grid_height
         else:
@@ -157,8 +158,9 @@ class TwentyFortyEight:
                     changed = True
             print "============="   
             #if any tile has moved, add a new tile to the grid
-            if changed == True:
-                self.new_tile()
+        if changed == True:
+            print"moved already"
+            self.new_tile()
                 
     def new_tile(self):
         """
@@ -169,10 +171,13 @@ class TwentyFortyEight:
         new_row = random.randrange(self.grid_height)
         new_col = random.randrange(self.grid_width)  
         if self.get_tile(new_row, new_col) == 0:
+            print "new tile is here, with row", new_row,"col", new_col
             new_tile = random.choice([2]*90+[4]*10)
             self.set_tile(new_row, new_col, new_tile)
+            return
         else:
-            new_tile()
+            print "go on finding"
+            self.new_tile()
         
     def set_tile(self, row, col, value):
         """
@@ -187,14 +192,14 @@ class TwentyFortyEight:
         return self.cell[row][col]
 
 #Test
-game=TwentyFortyEight(4,5)
-print game
-game.set_tile(0,0,2)
-game.set_tile(1,0,0)
-game.set_tile(2,0,2)
-game.set_tile(3,0,4)
-print game
-game.move(UP)
-print "game after move is", game
+#game=TwentyFortyEight(4,5)
+#print game
+#game.set_tile(0,0,2)
+#game.set_tile(1,0,0)
+#game.set_tile(2,0,2)
+#game.set_tile(3,0,4)
+#print game
+#game.move(UP)
+#print "game after move is", game
 
-#poc_2048_gui.run_gui(TwentyFortyEight(4, 4))
+poc_2048_gui.run_gui(TwentyFortyEight(4, 4))
