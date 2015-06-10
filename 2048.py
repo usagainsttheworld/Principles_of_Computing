@@ -25,7 +25,7 @@ def merge(line):
     slide_list = []
     merged_list = []
     result_list =[]
-    merge = False     
+    merged = False     
     #Iterate over the line input looking for non-zero entries. 
     #For each non-zero entry, put the value into the next available 
     #entry of the slide_list (starting at position 0), add 0 in the end to match the length of line
@@ -38,16 +38,16 @@ def merge(line):
     #in which pairs of tiles in the slide_list are replaced with 
     #a tile of twice the value and a zero tile.
     for i in range(len(slide_list)-1):
-        if slide_list[i] == slide_list[i+1] and merge == False:
+        if slide_list[i] == slide_list[i+1] and merged == False:
             merged_list.append(slide_list[i]*2)
             merged_list.append(0)
-            merge = True          
-        elif slide_list[i] != slide_list[i+1] and merge == False:
+            merged = True          
+        elif slide_list[i] != slide_list[i+1] and merged == False:
             merged_list.append(slide_list[i])
         else:
-            merge = False
+            merged = False
     #deal with last element in the list
-    if slide_list[-1] != 0 and merge == False:
+    if slide_list[-1] != 0 and merged == False:
         merged_list.append(slide_list[-1])
     
     #slide the non-zero to the left
@@ -69,6 +69,8 @@ class TwentyFortyEight:
         self.grid_height = grid_height
         self.grid_width = grid_width
         self.grid=[]
+        self.cell = [[0 for dummy_col in range(self.grid_width)]
+                       for dummy_row in range(self.grid_height)]
         #list of indices for the initial tiles in the direction.
         #Initial tiles are those whose values appear first in the list 
         #passed to the merge function.
@@ -94,7 +96,11 @@ class TwentyFortyEight:
         """
         Return a string representation of the grid for debugging.
         """
-        return str(self.cell)
+        str1 = str(self.cell)
+        str2 = str1.replace('], [',']\n[')
+        str2 += "\nwith 1 additional tile"
+        print str2
+        return str2
 
     def get_grid_height(self):
         """
@@ -155,11 +161,11 @@ class TwentyFortyEight:
                 self.set_tile(set_row, set_col, set_value)
                 print "set value", set_value, "to row", set_row, "and col", set_col
                 if set_value == ori_value:
-                    changed = True
+                    changed = False
             print "============="   
             #if any tile has moved, add a new tile to the grid
         if changed == True:
-            print"moved already"
+            print "changed true"
             self.new_tile()
                 
     def new_tile(self):
@@ -171,12 +177,10 @@ class TwentyFortyEight:
         new_row = random.randrange(self.grid_height)
         new_col = random.randrange(self.grid_width)  
         if self.get_tile(new_row, new_col) == 0:
-            print "new tile is here, with row", new_row,"col", new_col
             new_tile = random.choice([2]*90+[4]*10)
             self.set_tile(new_row, new_col, new_tile)
             return
         else:
-            print "go on finding"
             self.new_tile()
         
     def set_tile(self, row, col, value):
@@ -184,6 +188,7 @@ class TwentyFortyEight:
         Set the tile at position row, col to have the given value.
         """
         self.cell[row][col]=value
+        print self.cell
 
     def get_tile(self, row, col):
         """
@@ -192,14 +197,35 @@ class TwentyFortyEight:
         return self.cell[row][col]
 
 #Test
-#game=TwentyFortyEight(4,5)
+game=TwentyFortyEight(4,5)
 #print game
-#game.set_tile(0,0,2)
-#game.set_tile(1,0,0)
-#game.set_tile(2,0,2)
-#game.set_tile(3,0,4)
-#print game
-#game.move(UP)
-#print "game after move is", game
+game.set_tile(0,0,8)
+game.set_tile(0,1,16)
+game.set_tile(0,2,8)
+game.set_tile(0,3,16)
+game.set_tile(0,4,8)
 
-poc_2048_gui.run_gui(TwentyFortyEight(4, 4))
+game.set_tile(1,0,16)
+game.set_tile(1,1,8)
+game.set_tile(1,2,16)
+game.set_tile(1,3,8)
+game.set_tile(1,4,16)
+
+game.set_tile(2,0,8)
+game.set_tile(2,1,16)
+game.set_tile(2,2,8)
+game.set_tile(2,3,16)
+game.set_tile(2,4,8)
+
+game.set_tile(3,0,16)
+game.set_tile(3,1,8)
+game.set_tile(3,2,16)
+game.set_tile(3,3,8)
+game.set_tile(3,4,16)
+#print game
+#print "cell b4 move is", game.cell
+
+game.move(UP)
+#print "cell after move is", game.cell
+game.__str__()
+#poc_2048_gui.run_gui(TwentyFortyEight(4, 4))
