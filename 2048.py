@@ -37,13 +37,13 @@ def merge(line):
     #Iterate over the slide_list and create merged_list 
     #in which pairs of tiles in the slide_list are replaced with 
     #a tile of twice the value and a zero tile.
-    for i in range(len(slide_list)-1):
-        if slide_list[i] == slide_list[i+1] and merged == False:
-            merged_list.append(slide_list[i]*2)
+    for indexi in range(len(slide_list)-1):
+        if slide_list[indexi] == slide_list[indexi+1] and merged == False:
+            merged_list.append(slide_list[indexi]*2)
             merged_list.append(0)
             merged = True          
-        elif slide_list[i] != slide_list[i+1] and merged == False:
-            merged_list.append(slide_list[i])
+        elif slide_list[indexi] != slide_list[indexi+1] and merged == False:
+            merged_list.append(slide_list[indexi])
         else:
             merged = False
     #deal with last element in the list
@@ -63,27 +63,26 @@ class TwentyFortyEight:
     Class to run the game logic.
     """
     def __init__(self, grid_height, grid_width):
-        self.grid_height = grid_height
-        self.grid_width = grid_width
-        self.grid=[]
-        self.cell = [[0 for dummy_col in range(self.grid_width)]
-                       for dummy_row in range(self.grid_height)]
+        self._height = grid_height
+        self._width = grid_width
+        self._grid_tile = [[0 for dummy_col in range(self._width)]
+                       for dummy_row in range(self._height)]
         #list of indices for the initial tiles in the direction.
         #Initial tiles are those whose values appear first in the list 
         #passed to the merge function.
-        up_list=[(0,col) for col in range(self.grid_width)]
-        down_list=[(self.grid_height-1, col) for col in range(self.grid_width)]
-        left_list=[(row, 0) for row in range(self.grid_height)]
-        right_list=[(row, self.grid_width-1) for row in range(self.grid_height)]
-        self.move_dict={UP:up_list, DOWN:down_list, LEFT:left_list, RIGHT:right_list}
+        up_list=[(0,col) for col in range(self._width)]
+        down_list=[(self._height-1, col) for col in range(self._width)]
+        left_list=[(row, 0) for row in range(self._height)]
+        right_list=[(row, self._width-1) for row in range(self._height)]
+        self._move_dict={UP:up_list, DOWN:down_list, LEFT:left_list, RIGHT:right_list}
 
     def reset(self):
         """
         Reset the game so the grid is empty except for two
         initial tiles.
         """
-        self.cell = [[0 for dummy_col in range(self.grid_width)]
-                       for dummy_row in range(self.grid_height)]
+        self._grid_tile = [[0 for dummy_col in range(self._width)]
+                       for dummy_row in range(self._height)]
         ##print "creat 1st tile"
         self.new_tile()
         ##print "creat 2nd tile"
@@ -93,19 +92,19 @@ class TwentyFortyEight:
         """
         Return a string representation of the grid for debugging.
         """
-        return str(self.cell)
+        return str(self._grid_tile)
 
     def get_grid_height(self):
         """
         Get the height of the board.
         """
-        return self.grid_height
+        return self._height
 
     def get_grid_width(self):
         """
         Get the width of the board.
         """
-        return self.grid_width
+        return self._width
 
     def move(self, direction):
         """
@@ -114,16 +113,14 @@ class TwentyFortyEight:
         """      
         #Boolean to check if any tile has moved
         changed = False
-        
-        if direction == UP or DOWN:
-            num_steps = self.grid_height
+                
+        if direction == UP or direction == DOWN:
+            num_steps = self._height
             print "up or down"
-        elif direction == LEFT or RIGHT:
+        elif direction == LEFT or direction == RIGHT:
             print" left or right"
-            num_steps = self.grid_width
-        print "Number of steps is", num_steps       
-        ##print "initial tiles are", self.move_dict[direction]
-        for entry in self.move_dict[direction]:
+            num_steps = self._width
+        for entry in self._move_dict[direction]:
         #use the direction in the provided OFFSETS dictionary to iterate over 
         #the entries of the associated row or column starting at the specified 
         #initial tile. Retrieve the tile values from those entries, and store 
@@ -133,23 +130,17 @@ class TwentyFortyEight:
             for eachstep in range(num_steps):      
                 row = entry[0] + eachstep*(OFFSETS[direction])[0]
                 col = entry[1] + eachstep*(OFFSETS[direction])[1]
-                #function that iterates through the cells in a grid
+                #function that iterates through the tiles in a grid
                 #in a linear direction;
-                #entry is a tuple[row,col] denoting the starting cell;
+                #entry is a tuple[row,col] denoting the starting tile;
                 #Offsets[direction] is a tuple that contains diference btw
-                #consecutive cells in the traversal;
+                #consecutive tiles in the traversal;
                 current_pos=[row, col]
-                print "current pos is", current_pos
                 pos_list.append(current_pos)
-                
                 current_tile=self.get_tile(row, col)
-                print "current tile is", current_tile
                 temp_list.append(current_tile)       
-            print "temp_list is", temp_list
             merged_list = merge(temp_list)
             #Use your merge function to merge the tile values in this temporary list
-            print "merged_list is", merged_list
-            ##print "position list is", pos_list
             for index in range(num_steps):
             #store the merged tile values back into the grid
                 set_row = pos_list[index][0]
@@ -157,7 +148,6 @@ class TwentyFortyEight:
                 set_value = merged_list[index]
                 ori_value = temp_list[index]
                 self.set_tile(set_row, set_col, set_value)
-                ##print "set value", set_value, "to row", set_row, "and col", set_col
                 if set_value != ori_value:
                     changed = True  
             #if any tile has moved, add a new tile to the grid
@@ -170,8 +160,8 @@ class TwentyFortyEight:
         square(tile=0).  The tile should be 2 90% of the time and
         4 10% of the time.
         """
-        new_row = random.randrange(self.grid_height)
-        new_col = random.randrange(self.grid_width)  
+        new_row = random.randrange(self._height)
+        new_col = random.randrange(self._width)  
         if self.get_tile(new_row, new_col) == 0:
             new_tile = random.choice([2]*90+[4]*10)
             self.set_tile(new_row, new_col, new_tile)
@@ -183,58 +173,12 @@ class TwentyFortyEight:
         """
         Set the tile at position row, col to have the given value.
         """
-        self.cell[row][col]=value
-        ##print self.cell
+        self._grid_tile[row][col]=value
 
     def get_tile(self, row, col):
         """
         Return the value of the tile at position row, col.
         """
-        return self.cell[row][col]
+        return self._grid_tile[row][col]
 
-#Test
-game=TwentyFortyEight(5,6)
-
-game.set_tile(0,0,0)
-game.set_tile(0,1,2)
-game.set_tile(0,2,4)
-game.set_tile(0,3,8)
-game.set_tile(0,4,8)
-game.set_tile(0,5,32)
-
-game.set_tile(1,0,16)
-game.set_tile(1,1,2)
-game.set_tile(1,2,4)
-game.set_tile(1,3,16)
-game.set_tile(1,4,64)
-game.set_tile(1,5,32)
-              
-game.set_tile(2,0,0)
-game.set_tile(2,1,2)
-game.set_tile(2,2,4)
-game.set_tile(2,3,8)
-game.set_tile(2,4,0)
-game.set_tile(2,5,32)
-              
-game.set_tile(3,0,16)
-game.set_tile(3,1,16)
-game.set_tile(3,2,16)
-game.set_tile(3,3,16)
-game.set_tile(3,4,16)
-game.set_tile(3,5,16)
-              
-game.set_tile(4,0,16)
-game.set_tile(4,1,8)
-game.set_tile(4,2,4)
-game.set_tile(4,3,4)
-game.set_tile(4,4,16)
-game.set_tile(4,5,2)              
-              
-print "game b4 move is", game
-print "cell b4 move is", game.cell
-game.move(LEFT)
-print "game after move is", game
-print "cell after move is", game.cell
-
-#print game.__str__()
 poc_2048_gui.run_gui(TwentyFortyEight(4, 4))
