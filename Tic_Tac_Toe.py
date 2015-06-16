@@ -9,7 +9,7 @@ import poc_ttt_provided as provided
 # Constants for Monte Carlo simulator
 # You may change the values of these constants as desired, but
 #  do not change their names.
-NTRIALS = 100      # Number of trials to run
+NTRIALS = 20      # Number of trials to run
 SCORE_CURRENT = 1.0 # Score for squares played by the current player
 SCORE_OTHER = 3.0   # Score for squares played by the other player
     
@@ -21,7 +21,7 @@ def mc_trial(board, player):
     """
     while board.check_win() is None:
         board.move(random.randrange(0,board.get_dim()),random.randrange(0,board.get_dim()),player)
-        board.move(random.randrange(0,board.get_dim()),random.randrange(0,board.get_dim()),(5-player))
+        board.move(random.randrange(0,board.get_dim()),random.randrange(0,board.get_dim()),provided.switch_player(player))
     else:
         return   
 
@@ -37,12 +37,12 @@ def mc_update_scores(scores, board, player):
             if board.check_win() == player:
                 if board.square(dummy_row, dummy_col) == player:
                     scores[dummy_row][dummy_col] += SCORE_CURRENT
-                elif board.square(dummy_row, dummy_col) != player and board.square(dummy_row, dummy_col) != provided.EMPTY:
+                elif board.square(dummy_row, dummy_col) == provided.switch_player(player):
                     scores[dummy_row][dummy_col] -= SCORE_OTHER
-            elif board.check_win() != provided.DRAW:
+            elif board.check_win() == provided.switch_player(player):
                 if board.square(dummy_row, dummy_col) == player:
                     scores[dummy_row][dummy_col] -= SCORE_CURRENT
-                elif board.square(dummy_row, dummy_col) != player and board.square(dummy_row, dummy_col) != provided.EMPTY:
+                elif board.square(dummy_row, dummy_col) == provided.switch_player(player):
                     scores[dummy_row][dummy_col] += SCORE_OTHER
     #print scores
 
@@ -54,19 +54,20 @@ def get_best_move(board, scores):
     next move), so your function may do whatever it wants in that case. 
     The case where the board is full will not be tested.
     """
-    maxscore_so_far = scores[0][0]
-    square_w_maxscore = [(0,0)]
-    for dummy_row in range(board.get_dim()):
-        for dummy_col in range(board.get_dim()):
-            if board.square(dummy_row, dummy_col) == provided.EMPTY:
-                if scores[dummy_row][dummy_col] == maxscore_so_far:
-                    square_w_maxscore.append((dummy_row, dummy_col))
-                elif scores[dummy_row][dummy_col] > maxscore_so_far:
-                    maxscore_so_far = scores[dummy_row][dummy_col]
-                    square_w_maxscore = []
-                    square_w_maxscore.append((dummy_row, dummy_col))
+    empty_squares = board.get_empty_squares()
+    #board.get_empty_squares() return a list of (row, col) tuples for all empty squares
+    maxscore_so_far = scores[empty_squares[0][0]][empty_squares[0][1]]
+    #to get the score for the first empty square
+    square_w_maxscore = [empty_squares[0]]
+    for dummy_square in empty_squares:
+        if scores[dummy_square[0]][dummy_square[1]] == maxscore_so_far:
+            square_w_maxscore.append(dummy_square)
+        elif scores[dummy_square[0]][dummy_square[1]] > maxscore_so_far:
+            maxscore_so_far = scores[dummy_square[0]][dummy_square[1]]
+            square_w_maxscore = []
+            square_w_maxscore.append(dummy_square)  
     #print random.choice(square_w_maxscore)
-    return random.choice(square_w_maxscore)         
+    return random.choice(square_w_maxscore)
 
 def mc_move(board, player, trials):
     """
