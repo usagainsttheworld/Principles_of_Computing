@@ -55,9 +55,95 @@ class BankAccount:
         """Returns the total fees ever deducted from the account."""
         return self.fee
 
+#########Quiz 4#########
+"""
+Q3.
+Probability for sequences of trials.
+Consider a sequence of trials in which a fair four-sided die (with faces 
+numbered 1-4) is rolled twice. What is the expected value of the product 
+of the two die rolls? Enter the answer as a floating point number below.
+"""
+def gen_all_sequences(outcomes, length):
+    """
+    Functions to enumerate sequences of outcomes
+    Repetition of outcomes is allowed;
+    Iterative function that enumerates the set of all sequences of
+    outcomes of given length
+    """   
+    ans = set([()])
+    for dummy_idx in range(length):
+        temp = set()
+        for seq in ans:
+            for item in outcomes:
+                new_seq = list(seq)
+                new_seq.append(item)
+                temp.add(tuple(new_seq))
+        ans = temp
+    return ans
 
+def get_expected_value(outcomes, length):
+    """
+    to get expected value for a die roll in a sequence trail
+    """
+    seq_outcomes = gen_all_sequences(outcomes, length)
+    #print "Computed", len(seq_outcomes), "sequences of", str(length), "outcomes"
+    #print "Sequences were", seq_outcomes
+    sum = 0
+    for dummy_idx in seq_outcomes:
+        sum = sum + dummy_idx[0] + dummy_idx[1]
+    expected_value = sum/len(seq_outcomes)
+    return expected_value
 
+print get_expected_value(set([1,2,3,4]), 2)
 
+#Q4
+"""
+Given a trial in which a decimal digit is selected from the list 
+["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"] with equal probability 0.1, 
+consider a five-digit string created by a sequence of such trials (leading zeros 
+    and repeated digits are allowed). What is the probability that this five-digit 
+string consists of five consecutive digits in either ascending or descending order 
+(e.g; "34567" or "43210") ?
+"""
+def gen_all_sequences(outcomes, length):
+    """
+    Iterative function that enumerates the set of all sequences of
+    outcomes of given length
+    """   
+    ans = set([()])
+    for dummy_idx in range(length):
+        temp = set()
+        for seq in ans:
+            for item in outcomes:
+                new_seq = list(seq)
+                new_seq.append(item)
+                temp.add(tuple(new_seq))
+        ans = temp
+    return ans
+
+def get_asc_des_possibility(outcomes, length):
+    """
+    to get probability that the length from the outcomes is in either 
+    ascending or descending order
+    """
+    seq_outcomes = gen_all_sequences(outcomes, length)
+    #print "Computed", len(seq_outcomes), "sequences of", str(length), "outcomes"
+    #print "Sequences were", seq_outcomes
+    counter = 0
+    print seq_outcomes
+    print len(seq_outcomes)
+    for dummy_seq in seq_outcomes:
+        for dummy_element in dummy_seq:
+            if all(earlier + 1 == later for earlier, later in zip(dummy_seq, dummy_seq[1:])):
+                print dummy_seq
+                counter += 1
+    print counter
+    asc_des = counter*2
+    possibility = float(asc_des/len(seq_outcomes))
+    return possibility
+
+#print get_asc_des_possibility(set(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]), 5)
+print get_asc_des_possibility(set([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]), 5)
 
 
 
