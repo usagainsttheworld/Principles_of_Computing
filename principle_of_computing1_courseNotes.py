@@ -98,12 +98,11 @@ print get_expected_value(set([1,2,3,4]), 2)
 
 #Q4
 """
-Given a trial in which a decimal digit is selected from the list 
-["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"] with equal probability 0.1, 
-consider a five-digit string created by a sequence of such trials (leading zeros 
-    and repeated digits are allowed). What is the probability that this five-digit 
-string consists of five consecutive digits in either ascending or descending order 
-(e.g; "34567" or "43210") ?
+Given a trial in which a decimal digit is selected from the list ["0", "1", "2", "3",
+"4", "5", "6", "7", "8", "9"] with equal probability 0.1, consider a five-digit 
+string created by a sequence of such trials (leading zeros and repeated digits 
+are allowed). What is the probability that this five-digit string consists of 
+five consecutive digits in either ascending or descending order (e.g; "34567" or "43210")?
 """
 def gen_all_sequences(outcomes, length):
     """
@@ -129,21 +128,115 @@ def get_asc_des_possibility(outcomes, length):
     seq_outcomes = gen_all_sequences(outcomes, length)
     #print "Computed", len(seq_outcomes), "sequences of", str(length), "outcomes"
     #print "Sequences were", seq_outcomes
-    counter = 0
-    print seq_outcomes
-    print len(seq_outcomes)
+    asc_list = []
     for dummy_seq in seq_outcomes:
-        for dummy_element in dummy_seq:
-            if all(earlier + 1 == later for earlier, later in zip(dummy_seq, dummy_seq[1:])):
-                print dummy_seq
-                counter += 1
-    print counter
-    asc_des = counter*2
-    possibility = float(asc_des/len(seq_outcomes))
+        if dummy_seq[0] + len(dummy_seq)-1 == dummy_seq[len(dummy_seq)-1]:
+            asc_found = True
+            for dummy_index in range(len(dummy_seq)-1):
+                if dummy_seq[dummy_index] + 1 != dummy_seq[dummy_index + 1]:
+                    asc_found = False
+                    break
+            if asc_found:
+                asc_list.append(dummy_seq)
+    asc_des_count = len(asc_list)*2
+    possibility = float(asc_des_count)/float(len(seq_outcomes))
+    return possibility
+
+#print get_asc_des_possibility(set(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]), 5)
+print get_asc_des_possibility(set([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]), 5)
+
+#Q5
+"""
+Permutations
+Consider a trial in which five digit strings are formed as permutations of the 
+digits ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]. (In this case, 
+repetition of digits is not allowed.) If the probability of each permutation 
+is the same, what is the probability that this five digits string consists of 
+consecutive digits in either ascending or descending order (e.g; "34567" or "43210")?
+"""
+def gen_permutations(outcomes, length):
+    """
+    Iterative function that generates set of permutations of
+    outcomes of length num_trials
+    No repeated outcomes allowed
+    """
+    ans = set([()])
+    for dummy_idx in range(length):
+        temp = set()
+        for seq in ans:
+            for item in outcomes:
+                if item not in seq:
+                    new_seq = list(seq)
+                    new_seq.append(item)
+                    temp.add(tuple(new_seq))
+        ans = temp
+    return ans
+
+def get_asc_des_possibility(outcomes, length):
+    """
+    to get probability that the length from the outcomes is in either 
+    ascending or descending order
+    """
+    permutaion_outcomes = gen_permutations(outcomes, length)
+    asc_list = []
+    for dummy_seq in permutaion_outcomes:
+        if dummy_seq[0] + len(dummy_seq)-1 == dummy_seq[len(dummy_seq)-1]:
+            asc_found = True
+            for dummy_index in range(len(dummy_seq)-1):
+                if dummy_seq[dummy_index] + 1 != dummy_seq[dummy_index + 1]:
+                    asc_found = False
+                    break
+            if asc_found:
+                asc_list.append(dummy_seq)
+    asc_des_count = len(asc_list)*2
+    possibility = float(asc_des_count)/float(len(permutaion_outcomes))
     return possibility
 
 #print get_asc_des_possibility(set(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]), 5)
 print get_asc_des_possibility(set([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]), 5)
 
 
+
+#Q6
+"""
+In this week's lectures, we discussed an iterative approach to generating all 
+sequences of outcomes where repeated outcomes were allowed. Starting from this 
+program template, implement a function gen_permutations(outcomes, num_trials) 
+that takes a list of outcomes and a number of trials and returns a list of all 
+possible permutations of length num_trials from this set of outcomes.
+"""
+
+def gen_permutations(outcomes, length):
+    """
+    Function to generate permutations of outcomes
+    Repetition of outcomes not allowed.
+    Iterative function that generates set of permutations of
+    outcomes of length num_trials
+    No repeated outcomes allowed
+    """
+    ans = set([()])
+    for dummy_idx in range(length):
+        temp = set()
+        for seq in ans:
+            for item in outcomes:
+                if item not in seq:
+                    new_seq = list(seq)
+                    new_seq.append(item)
+                    temp.add(tuple(new_seq))
+        ans = temp
+    return ans
+
+## Final example for homework problem
+outcome = set(["a", "b", "c", "d", "e", "f"])
+permutations = gen_permutations(outcome, 4)
+permutation_list = list(permutations)
+permutation_list.sort()
+print
+print "Answer is", permutation_list[100]
+
+#Q9
+"""
+Given a standard 52 card deck of playing cards, what is the probability of being 
+dealt a five card hand where all five cards are of the same suit?
+"""
 
