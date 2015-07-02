@@ -117,9 +117,34 @@ def simulate_clicker(build_info, duration, strategy):
     duration with the given strategy.  Returns a ClickerState
     object corresponding to the final state of the game.
     """
-
-    # Replace with your code
-    return ClickerState()
+    clicker_info = build_info.clone()
+    clicker_state = ClickerState()
+    current_clicker = 0   
+    cookies = clicker_state._current_cookies
+    cps = clicker_state._CPS
+    history = clicker_state._history
+    time_left = duration - clicker_state._time
+    
+    while current_clicker <= duration:
+        current_clicker += 1
+        if clicker_state._time >duration:
+            clicker_state.wait(time_left)
+            return
+        else:
+            item_to_buy = strategy(cookies, cps, history, time_left, clicker_info)
+            if item_to_buy == None:
+                clicker_state.wait(time_left)
+                return
+            else:
+                time_to_wait = clicker_state.time_until(clicker_info.get_cost(item_to_buy))
+                if time_to_wait > duration:
+                    clicker_state.wait(time_left)
+                    return
+                else:
+                    clicker_state.wait(time_to_wait)
+                    clicker_state.buy_item(item_to_buy, clicker_info.get_cost, clicker_info.get_cps)
+                    clicker_info.update_item(item_to_buy)
+    return clicker_state
 
 
 def strategy_cursor_broken(cookies, cps, history, time_left, build_info):
@@ -190,6 +215,7 @@ def run():
     # run_strategy("Best", SIM_TIME, strategy_best)
     
 #run()
+"""
 game = ClickerState()
 print game.get_cookies()
 game.wait(12)
@@ -198,6 +224,11 @@ game.buy_item("farm", 15, 6)
 print game.get_cookies()
 print game.get_cps()
 print game.get_history()
-
+"""
+test = provided.BuildInfo()
+simulate_clicker(test, SIM_TIME, strategy_cursor_broken)
     
+
+
+
 
