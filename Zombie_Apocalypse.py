@@ -125,19 +125,41 @@ class Apocalypse(poc_grid.Grid):
         Function that moves humans away from zombies, diagonal moves
         are allowed
         """
-        pass
+        human_idx = 0
+        for cell in self._human_list:
+            neighbors = self.eight_neighbors(cell[0],cell[1])
+            neighbors.append(cell)
+            max_distance = max ([zombie_distance_field[cell[0]][cell[1]] for cell in neighbors])
+            max_list = []
+            for each_cell in neighbors:
+                if zombie_distance_field[each_cell[0]][each_cell[1]] == max_distance:
+                    max_list.append(each_cell)
+            move_cell = random.choice(max_list)
+            self._human_list[human_idx]= move_cell
+            human_idx += 1
     
     def move_zombies(self, human_distance_field):
         """
         Function that moves zombies towards humans, no diagonal moves
         are allowed
         """
-        pass
+        zombie_idx = 0
+        for cell in self._zombie_list:
+            neighbors = self.four_neighbors(cell[0],cell[1])
+            neighbors.append(cell)
+            min_distance = min ([human_distance_field[cell[0]][cell[1]] for cell in neighbors])
+            min_list = []
+            for each_cell in neighbors:
+                if human_distance_field[each_cell[0]][each_cell[1]] == min_distance:
+                    min_list.append(each_cell)
+            move_cell = random.choice(min_list)
+            self._zombie_list[zombie_idx]= move_cell
+            zombie_idx += 1
 
 # Start up gui for simulation - You will need to write some code above
 # before this will work without errors
 
-#poc_zombie_gui.run_gui(Apocalypse(30, 40))
-obj = Apocalypse(3, 3, [], [], [(2, 2)])
-obj.compute_distance_field(HUMAN) 
+poc_zombie_gui.run_gui(Apocalypse(30, 40))
+
+
 
