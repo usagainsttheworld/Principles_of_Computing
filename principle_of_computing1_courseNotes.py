@@ -379,3 +379,46 @@ my_stack.pop()
 my_stack.pop()
 my_stack.pop()
 print my_stack.pop()
+
+#Recursion
+def is_palindrome(word):
+	if len(word)<2:
+		return True
+	else:
+		if word[0]!=word[-1]:
+			return False
+		else:
+			return is_palindrome(word[1:-1])
+#Quiz 2
+#Q4
+counter = 0
+def fib(num):
+    global counter
+    counter += 1
+    print counter
+    if num == 0:
+        return 0
+    elif num == 1:
+        return 1
+    else:
+        return fib(num - 1) + fib(num - 2)
+fib(3)
+
+#Q5
+counter = 0
+def memoized_fib(num, memo_dict):
+    global counter
+    counter += 1
+    print counter
+    if num in memo_dict:
+        return memo_dict[num]
+    else:
+        sum1 = memoized_fib(num - 1, memo_dict)
+        sum2 = memoized_fib(num - 2, memo_dict)
+        memo_dict[num] = sum1 + sum2
+        return sum1 + sum2
+memoized_fib(6,{0:0,1:1})
+
+
+
+
