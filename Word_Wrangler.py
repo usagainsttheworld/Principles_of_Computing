@@ -54,13 +54,21 @@ def merge(list1, list2):
     merge_list = []
     idx_i = 0
     idx_j = 0
-    while idx_i < len(list1)+1 and idx_j < len(list2)+1:
-        if list1[idx_i] <= list2[idx_j] or idx_j == len(list2):
+    while idx_i < len(list1) and idx_j < len(list2):
+        if list1[idx_i] <= list2[idx_j]:
             merge_list.append(list1[idx_i])
             idx_i += 1
-        elif list1[idx_i] >list2[idx_j] or idx_i == len(list1):
+        elif list1[idx_i] >list2[idx_j] :
             merge_list.append(list2[idx_j])
-            idx_j += 1      
+            idx_j += 1  
+    if idx_i == len(list1):
+        while idx_j < len(list2):
+            merge_list.append(list2[idx_j])
+            idx_j += 1 
+    elif idx_j == len(list2):
+        while idx_i < len(list1):
+            merge_list.append(list1[idx_i])
+            idx_i += 1
     return merge_list
                 
 def merge_sort(list1):
@@ -71,8 +79,14 @@ def merge_sort(list1):
 
     This function should be recursive.
     """
-                              
-    return []
+    if len(list1) <= 1:
+        return list1
+    else:
+        listb4 = list1[:len(list1)/2]
+        listaf= list1[len(list1)/2:]
+        listb4 = merge_sort(listb4)
+        listaf = merge_sort(listaf)
+        return merge(listb4, listaf)
 
 # Function to generate all strings for the word wrangler game
 
@@ -110,7 +124,11 @@ def run():
 
 # Uncomment when you are ready to try the game
 #run()
-list1 = [1,2,3,4,5,8]
-list2 = [3,5,7,8,9]
+list1 = [3,6,8]
+list2 = [1,6,9]
+list3 = [3,6,8,1,6,2,9,11]
 #print intersect(list1,list2)
-print merge(list1,list2)
+#print merge(list1,list2)
+print merge_sort(list3)
+
+
