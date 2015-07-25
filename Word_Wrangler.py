@@ -100,9 +100,28 @@ def gen_all_strings(word):
 
     This function should be recursive.
     """
-    return []
+    if len(word) == 1 or len(word) ==0:
+        return [word]
+    else:
+        first = word[0]
+        rest = word[1:]
+        rest_strings = gen_all_strings(rest)
+        new_string_list = []
+        all_strings = []
+        new_string_list.append(first)
+        for each_string in rest_strings:
+            for dummy_idx in range(len(each_string)+1):
+                if dummy_idx == 0:
+                    new_string = first + rest
+                else:
+                    new_string = rest[:dummy_idx] + first + rest[dummy_idx:]
+                new_string_list.append(new_string)
+        all_strings = rest_strings + new_string_list 
+        return all_strings
+            
+  
 
-# Function to load words from a file
+    #Function to load words from a file
 
 def load_words(filename):
     """
@@ -129,6 +148,7 @@ list2 = [1,6,9]
 list3 = [3,6,8,1,6,2,9,11]
 #print intersect(list1,list2)
 #print merge(list1,list2)
-print merge_sort(list3)
+#print merge_sort(list3)
+print gen_all_strings("aab")
 
 
