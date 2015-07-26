@@ -130,10 +130,8 @@ def load_words(filename):
     """
     url = codeskulptor.file2url(filename)
     netfile = urllib2.urlopen(url)
-    dic_list = []
-    for line in netfile.readlines():
-        dic_list.append(line)    
-    
+    return list(netfile.readlines())
+
 def run():
     """
     Run game.
@@ -146,8 +144,7 @@ def run():
 
 
 # Uncomment when you are ready to try the game
-run()
-
+#run()
 #list1 = [3,6,8]
 #list2 = [1,6,9]
 #list3 = [3,6,8,1,6,2,9,11]
