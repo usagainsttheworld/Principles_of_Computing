@@ -100,37 +100,40 @@ def gen_all_strings(word):
 
     This function should be recursive.
     """
-    if len(word) == 1 or len(word) ==0:
-        return [word]
+    if len(word) == 0:
+        return [""]
     else:
         first = word[0]
         rest = word[1:]
         rest_strings = gen_all_strings(rest)
         new_string_list = []
-        all_strings = []
-        new_string_list.append(first)
+        all_strings = []       
         for each_string in rest_strings:
-            for dummy_idx in range(len(each_string)+1):
-                if dummy_idx == 0:
-                    new_string = first + rest
-                else:
-                    new_string = rest[:dummy_idx] + first + rest[dummy_idx:]
-                new_string_list.append(new_string)
+            if each_string == "":
+                new_string_list.append(first)
+            else:  
+                for dummy_idx in range(len(each_string)+1):
+                    if dummy_idx == 0:
+                        new_string = first + each_string
+                    else:
+                        new_string = each_string[:dummy_idx] + first + each_string[dummy_idx:]
+                    new_string_list.append(new_string)
         all_strings = rest_strings + new_string_list 
         return all_strings
-            
-  
-
-    #Function to load words from a file
-
+    
+#Function to load words from a file
 def load_words(filename):
     """
     Load word list from the file named filename.
 
     Returns a list of strings.
     """
-    return []
-
+    url = codeskulptor.file2url(filename)
+    netfile = urllib2.urlopen(url)
+    dic_list = []
+    for line in netfile.readlines():
+        dic_list.append(line)    
+    
 def run():
     """
     Run game.
@@ -141,14 +144,17 @@ def run():
                                      gen_all_strings)
     provided.run_game(wrangler)
 
+
 # Uncomment when you are ready to try the game
-#run()
-list1 = [3,6,8]
-list2 = [1,6,9]
-list3 = [3,6,8,1,6,2,9,11]
+run()
+
+#list1 = [3,6,8]
+#list2 = [1,6,9]
+#list3 = [3,6,8,1,6,2,9,11]
 #print intersect(list1,list2)
 #print merge(list1,list2)
 #print merge_sort(list3)
-print gen_all_strings("aab")
+#print gen_all_strings("aab")
+#load_words(WORDFILE)
 
 
