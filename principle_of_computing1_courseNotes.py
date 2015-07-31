@@ -419,6 +419,250 @@ def memoized_fib(num, memo_dict):
         return sum1 + sum2
 memoized_fib(6,{0:0,1:1})
 
+#Quiz3
+#Q2
+"""
+Recursive class definition for a non-empty list of nodes
+"""
+
+counter = 0
+class NodeList:
+    """
+    Basic class definition for non-empty lists using recursion
+    """
+
+    def __init__(self, val):
+        """
+        Create a list with one node
+        """
+        self._value = val
+        self._next = None
+     
+    
+    def append(self, val):
+        """
+        Append a node to an existing list of nodes
+        """
+        global counter
+        counter += 1
+        if self._next == None:
+            new_node = NodeList(val)
+            self._next = new_node
+            print "set next to", new_node
+        else:
+            self._next.append(val)
+            print "is appending", val
+        print "counter", counter    
+
+    def __str__(self):
+        """
+        Build standard string representation for list
+        """
+        if self._next == None:
+            return "[" + str(self._value) + "]"
+        else:
+            rest_str = str(self._next)
+            rest_str = rest_str[1 :]
+            return "[" + str(self._value) + ", " + rest_str
+    
+def run_example():
+    """
+    Create some examples
+    """
+    node_list = NodeList(2)
+    node_list.append(3)
+    print node_list
+    print ""
+    
+    node_list.append(5)
+    print node_list
+    print ""
+    
+    node_list.append(6)
+    print node_list
+    print ""
+    
+    node_list.append(7)
+    print node_list
+    print ""
+ 
+    
+run_example()
+
+#Q3
+"""
+Python definition of navigable Tree class
+"""
+
+import poc_tree
+
+class NavTree(poc_tree.Tree):
+    """
+    Recursive definition for navigable trees plus extra tree methods
+    """
+    
+    def __init__(self, value, children, parent = None):
+        """
+        Create a tree whose root has specific value (a string)
+        children is a list of references to the roots of the children.  
+        parent (if specified) is a reference to the tree's parent node
+        """
+        
+        poc_tree.Tree.__init__(self, value, children)
+        self._parent = parent
+        for child in self._children:
+            child._parent = self          
+    
+    def set_parent(self, parent):
+        """
+        Update parent field
+        """
+        self._parent = parent
+               
+            
+    def get_root(self):
+        """
+        Return the root of the tree
+        """
+        if self._parent is None:
+            return self
+        else:
+            return self._parent.get_root()
+
+    def depth(self):
+        """
+        Return the depth of the self with respect to the root of the tree
+        """
+        if self._parent is None:
+            return 0
+        else:
+            return self._parent.depth() + 1
+        
+    
+def run_examples():
+    """
+    Create some trees and apply various methods to these trees
+    """
+    tree_a = NavTree("a", [])
+    tree_b = NavTree("b", [])
+    tree_cab = NavTree("c", [tree_a, tree_b]) 
+    tree_e = NavTree("e", [])
+    tree_dcabe = NavTree("d", [tree_cab, tree_e])
+    print "ROOT", tree_a.get_root()
+    
+    print "This is the main tree -", tree_dcabe
+    print "This is tree that contains b -", tree_b.get_root()
+    
+    import poc_draw_tree
+    poc_draw_tree.TreeDisplay(tree_dcabe)
+
+    print "The node b has depth", tree_b.depth()
+    print "The node e has depth", tree_e.depth()
+  
+run_examples()
+
+#Q9
+"""
+Python definition of basic Tree class
+
+IMPORTANT:  Some class methods assume that instances of the Tree class
+always have a single parent (or no parent for the root). See problem #8
+on homework #3 for more details.
+"""
+
+
+class Tree:
+    """
+    Recursive definition for trees plus various tree methods
+    """
+    
+    def __init__(self, value, children):
+        """
+        Create a tree whose root has specific value (a string)
+        Children is a list of references to the roots of the subtrees.  
+        """
+        
+        self._value = value
+        self._children = children
+        
+        
+    def __str__(self):
+        """
+        Generate a string representation of the tree
+        Use an pre-order traversal of the tree
+        """
+        ans = "["
+        #ans += str(self._value)
+                   
+        for child in self._children:
+            ans += str(child)
+            ans += ", "
+        ans += str(self._value)
+        return ans + "]"
+
+    def get_value(self):
+        """
+        Getter for node's value
+        """
+        return self._value
+
+    def children(self):
+        """
+        Generator to return children
+        """
+        for child in self._children:
+            yield child
+                    
+    def num_nodes(self):
+        """
+        Compute number of nodes in the tree
+        """
+        ans = 1
+        for child in self._children:
+            ans += child.num_nodes()
+        return ans
+    
+    def num_leaves(self):
+        """
+        Count number of leaves in tree
+        """
+        if len(self._children) == 0:
+            return 1
+        
+        ans = 0
+        for child in self._children:
+            ans += child.num_leaves()
+        return ans
+
+    def height(self):
+        """
+        Compute height of a tree rooted by self
+        """
+        height = 0
+        for child in self._children:
+            height = max(height, child.height() + 1)
+        return height
+
+    
+def run_examples():
+    """
+    Create some trees and apply various methods to these trees
+    """
+    
+    my_tree = Tree("d", [Tree("c", [Tree("a", []), Tree("b", [])]), 
+                         Tree("e", [])])
+    print "Tree with nine nodes", my_tree
+    
+    print "The tree has", my_tree.num_nodes(), "nodes,", 
+    print my_tree.num_leaves(), "leaves and height",
+    print my_tree.height()
+
+    import poc_draw_tree
+    poc_draw_tree.TreeDisplay(my_tree)
+    
+             
+run_examples()
+
 
 
 
